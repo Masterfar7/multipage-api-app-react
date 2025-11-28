@@ -1,13 +1,10 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import { HashRouter } from 'react-router-dom'  
+import { HashRouter } from 'react-router-dom'
 import App from './App'
-import './styles/styles.scss'                    
+import './styles/styles.scss'
 
-const container = document.getElementById('root')
-if (!container) throw new Error('Не найден элемент #root')
-
-createRoot(container).render(
+createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HashRouter>
       <App />
