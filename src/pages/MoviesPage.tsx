@@ -40,7 +40,7 @@ export default function MoviesPage() {
         {movies.map((movie) => (
           <Link
             key={movie.imdbID}
-            to={`/movie/${movie.imdbID}`}
+            to={`/movies/${movie.imdbID}`}
             className="movie-card"
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
