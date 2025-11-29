@@ -1,132 +1,82 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
-import { searchMovies, type MovieShort } from '../api/api'
-
-const POPULAR = ['Inception', 'Interstellar', 'Avatar', 'Titanic', 'The Matrix']
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { searchMovies } from "../api/api";
 
 export default function MoviesPage() {
-  const [query, setQuery] = useState('')
-  const [movies, setMovies] = useState<MovieShort[]>([])
-  const [loading, setLoading] = useState(false)
+  const [query, setQuery] = useState("");
+  const [movies, setMovies] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-  // Загружаем популярные фильмы при открытии страницы
-  useEffect(() => {
-    loadPopular()
-  }, [])
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
 
-  // Загрузка популярных фильмов
-  const loadPopular = async () => {
-    setLoading(true)
-    const results = await Promise.all(
-      POPULAR.map(title => searchMovies(title).then(r => r[0]))
-    )
-    setMovies(results.filter(Boolean))
-    setLoading(false)
-  }
-
-  const onSearch = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!query.trim()) return
-    setLoading(true)
-    const results = await searchMovies(query)
-    setMovies(results)
-    setLoading(false)
-  }
+    setLoading(true);
+    const results = await searchMovies(query);
+    setMovies(results);
+    setLoading(false);
+  };
 
   return (
-    <div>
-      <h1 style={{ textAlign: 'center', marginBottom: '1.5rem' }}>Поиск фильмов</h1>
+    <>
+      <h1>Фильмы</h1>
 
-      {/* Форма поиска */}
-      <form
-        onSubmit={onSearch}
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '1rem',
-          marginBottom: '2rem'
-        }}
-      >
+      <form onSubmit={handleSearch} className="form-group">
         <input
           type="text"
-          placeholder="Введите название..."
+          placeholder="Название фильма"
           value={query}
-          onChange={e => setQuery(e.target.value)}
-          style={{
-            padding: '0.6rem 1rem',
-            borderRadius: '0.6rem',
-            border: '1px solid #ccc',
-            width: '260px',
-            fontSize: '1rem'
-          }}
+          onChange={(e) => setQuery(e.target.value)}
         />
 
-        <button
-          type="submit"
-          style={{
-            padding: '0.6rem 1.2rem',
-            borderRadius: '0.6rem',
-            border: 'none',
-            background: 'var(--accent)',
-            color: 'white',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          Найти
+        <button type="submit" className="btn" disabled={loading}>
+          {loading ? "Поиск..." : "Найти"}
         </button>
       </form>
 
       {loading && (
-        <div style={{ textAlign: 'center', fontSize: '1.2rem' }}>Загрузка...</div>
+        <div className="loading">Поиск...</div>
       )}
 
-      {/* Список фильмов */}
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '1.5rem',
-          justifyContent: 'center'
-        }}
-      >
-        {movies.map(movie => (
+      {/* Сетка фильмов */}
+      <div className="movie-grid">
+        {movies.map((movie) => (
           <Link
             key={movie.imdbID}
-            to={`/movie/${movie.imdbID}`}   // ← ВАЖНО! Теперь работает
+            to={`/movies/${movie.imdbID}`}
             className="movie-card"
-            style={{
-              width: '180px',
-              textDecoration: 'none',
-              color: 'inherit',
-              padding: '0.5rem',
-              borderRadius: '0.8rem',
-              background: 'white',
-              boxShadow: 'var(--shadow)',
-              textAlign: 'center'
-            }}
+            style={{ textDecoration: "none", color: "inherit" }}
           >
             <img
               src={
-                movie.Poster && movie.Poster !== 'N/A'
+                movie.Poster && movie.Poster !== "N/A"
                   ? movie.Poster
-                  : 'https://via.placeholder.com/300x450?text=No+Image'
+                  : "https://via.placeholder.com/300x450?text=No+Image"
               }
               alt={movie.Title}
-              style={{
-                width: '100%',
-                height: '260px',
-                objectFit: 'cover',
-                borderRadius: '0.6rem',
-                marginBottom: '0.5rem'
+              onError={(e) => {
+                e.currentTarget.src =
+                  "https://via.placeholder.com/300x450?text=No+Image";
               }}
             />
 
-            <strong>{movie.Title}</strong>
-            <div style={{ opacity: 0.7 }}>{movie.Year}</div>
+            <h4>{movie.Title}</h4>
+            <p>{movie.Year}</p>
           </Link>
         ))}
       </div>
-    </div>
-  )
+
+      {!loading && movies.length === 0 && query && (
+        <p
+          style={{
+            textAlign: "center",
+            marginTop: "3rem",
+            color: "#8b949e",
+          }}
+        >
+          Ничего не найдено
+        </p>
+      )}
+    </>
+  );
 }
