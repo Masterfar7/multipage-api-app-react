@@ -1,4 +1,4 @@
-const OMDB_KEY = 'c41ba7b7'
+const OMDB_KEY = '1eeaebfd'
 
 export type MovieShort = {
   Title: string
