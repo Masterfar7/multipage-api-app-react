@@ -10,6 +10,7 @@ export default function MoviesPage() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!query.trim()) return
+
     setLoading(true)
     const results = await searchMovies(query)
     setMovies(results)
@@ -19,36 +20,40 @@ export default function MoviesPage() {
   return (
     <>
       <h1>Фильмы</h1>
-      <form onSubmit={handleSearch} className="form-group">
+
+      <form onSubmit={handleSearch}>
         <input
           type="text"
-          placeholder="Название фильма (на английском или русском)"
+          placeholder="Название фильма (RU или EN)"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
-        <button type="submit" className="btn" disabled={loading}>
+        <button type="submit" disabled={loading}>
           {loading ? 'Поиск...' : 'Найти'}
         </button>
       </form>
 
       {loading && <div className="loading">Поиск...</div>}
 
-      <div className="grid">
+      {/* ГРИД ДЛЯ КАРТОЧЕК */}
+      <div className="movie-grid">
         {movies.map((movie) => (
           <Link
             key={movie.imdbID}
             to={`/movie/${movie.imdbID}`}
-            className="card"
+            className="movie-card"
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
             <img
-              src={movie.Poster !== 'N/A' ? movie.Poster : 'https://via.placeholder.com/300x450?text=No+Poster'}
+              src={
+                movie.Poster !== 'N/A'
+                  ? movie.Poster
+                  : 'https://via.placeholder.com/300x450?text=No+Poster'
+              }
               alt={movie.Title}
             />
-            <div>
-              <h4>{movie.Title}</h4>
-              <p>{movie.Year}</p>
-            </div>
+            <h4>{movie.Title}</h4>
+            <p>{movie.Year}</p>
           </Link>
         ))}
       </div>
