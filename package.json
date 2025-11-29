@@ -2,7 +2,7 @@
   "name": "multipage-api-app-react-final",
   "version": "1.0.0",
   "private": true,
-  "homepage": "https://Masterfar7.github.io/multipage-api-app-react",
+  "homepage": "https://masterfar7.github.io/multipage-api-app-react",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
