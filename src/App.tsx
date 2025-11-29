@@ -18,13 +18,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/weather" element={<WeatherPage />} />
-
-        {/* Список фильмов */}
         <Route path="/movies" element={<MoviesPage />} />
-
-        {/* Детали фильма — ИСПРАВЛЕНО */}
-        <Route path="/movie/:id" element={<MovieDetailsPage />} />
-
+        <Route path="/movies/:id" element={<MovieDetailsPage />} />
         <Route path="/converter" element={<ConverterPage />} />
         <Route path="*" element={<div>Страница не найдена</div>} />
       </Routes>
