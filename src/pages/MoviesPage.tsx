@@ -10,6 +10,7 @@ export default function MoviesPage() {
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!query.trim()) return
+
     setLoading(true)
     const results = await searchMovies(query)
     setMovies(results)
@@ -19,6 +20,7 @@ export default function MoviesPage() {
   return (
     <>
       <h1>Фильмы</h1>
+
       <form onSubmit={handleSearch} className="form-group">
         <input
           type="text"
@@ -37,7 +39,7 @@ export default function MoviesPage() {
         {movies.map((movie) => (
           <Link
             key={movie.imdbID}
-            to={`/movies/${movie.imdbID}`}  {/* ← ВАЖНО!!! */}
+            to={`/movies/${movie.imdbID}`}
             className="movie-card"
           >
             <img
