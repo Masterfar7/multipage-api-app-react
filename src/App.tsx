@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import WeatherPage from './pages/WeatherPage'
 import MoviesPage from './pages/MoviesPage'
@@ -18,10 +18,12 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/weather" element={<WeatherPage />} />
+
+        {/* Список фильмов */}
         <Route path="/movies" element={<MoviesPage />} />
 
-        {/* ДОЛЖНО БЫТЬ /movies/:id */}
-        <Route path="/movies/:id" element={<MovieDetailsPage />} />
+        {/* Детали фильма — ИСПРАВЛЕНО */}
+        <Route path="/movie/:id" element={<MovieDetailsPage />} />
 
         <Route path="/converter" element={<ConverterPage />} />
         <Route path="*" element={<div>Страница не найдена</div>} />
