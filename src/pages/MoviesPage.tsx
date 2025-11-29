@@ -1,86 +1,82 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { searchMovies, getMovieByTitle } from "../api/api";
+import { useState } from 'react'
+import { searchMovies } from '../api/api'
+import { Link } from 'react-router-dom'
 
 export default function MoviesPage() {
-  const [movies, setMovies] = useState<any[]>([]);
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState('')
+  const [movies, setMovies] = useState<any[]>([])
+  const [loading, setLoading] = useState(false)
 
-  const POPULAR = ["Inception", "The Dark Knight", "Interstellar", "Avatar", "Titanic"];
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!query.trim()) return
 
-  // Загружаем популярные при открытии
-  useEffect(() => {
-    async function loadPopular() {
-      setLoading(true);
-      const results = await Promise.all(
-        POPULAR.map((title) => getMovieByTitle(title))
-      );
-      setMovies(results);
-      setLoading(false);
-    }
-    loadPopular();
-  }, []);
-
-  // Поиск
-  async function handleSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (!query.trim()) return;
-
-    setLoading(true);
-    const results = await searchMovies(query);
-    setMovies(results || []);
-    setLoading(false);
+    setLoading(true)
+    const result = await searchMovies(query)
+    setMovies(result)
+    setLoading(false)
   }
 
   return (
-    <>
-      <h1>Фильмы</h1>
+    <div className="card">
 
-      <form onSubmit={handleSearch} className="form-group">
+      <form onSubmit={handleSearch} style={{ marginBottom: '2rem', textAlign: 'center' }}>
         <input
           type="text"
-          placeholder="Название фильма..."
+          placeholder="Введите название фильма..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          style={{
+            padding: '0.7rem 1rem',
+            width: '70%',
+            maxWidth: '400px',
+            marginRight: '1rem'
+          }}
         />
-        <button type="submit" disabled={loading}>
-          {loading ? "Поиск..." : "Найти"}
+        <button
+          style={{
+            padding: '0.8rem 1.2rem',
+            background: 'var(--accent)',
+            color: 'white',
+            borderRadius: '0.7rem',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+        >
+          Поиск
         </button>
       </form>
 
-      {loading && <div className="loading">Загрузка...</div>}
+      {loading && (
+        <p style={{ textAlign: 'center', fontSize: '1.3rem' }}>Загрузка...</p>
+      )}
 
       <div className="movie-grid">
-        {movies.map((movie) => (
+        {movies.map((m) => (
           <Link
-            key={movie.imdbID}
-            to={`/movies/${movie.imdbID}`}
+            key={m.imdbID}
+            to={`/movie/${m.imdbID}`}
             className="movie-card"
           >
             <img
               src={
-                movie.Poster !== "N/A"
-                  ? movie.Poster
-                  : "https://via.placeholder.com/300x450?text=No+Poster"
+                m.Poster && m.Poster !== 'N/A'
+                  ? m.Poster
+                  : 'https://via.placeholder.com/300x450?text=No+Image'
               }
-              alt={movie.Title}
-              onError={(e) => {
-                e.currentTarget.src =
-                  "https://via.placeholder.com/300x450?text=No+Poster";
-              }}
+              alt={m.Title}
             />
-            <h4>{movie.Title}</h4>
-            <p>{movie.Year}</p>
+            <strong>{m.Title}</strong>
+            <div>{m.Year}</div>
           </Link>
         ))}
       </div>
 
-      {!loading && movies.length === 0 && (
-        <p style={{ textAlign: "center", marginTop: "2rem" }}>
-          Ничего не найдено
+      {movies.length === 0 && !loading && (
+        <p style={{ textAlign: 'center', opacity: 0.6 }}>
+          Ничего не найдено. Введите название фильма.
         </p>
       )}
-    </>
-  );
+    </div>
+  )
 }
