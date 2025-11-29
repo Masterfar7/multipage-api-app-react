@@ -29,6 +29,9 @@ jobs:
       - name: Build Vite
         run: npm run build
 
+      - name: Create .nojekyll in dist
+        run: touch dist/.nojekyll
+
       - name: Upload dist
         uses: actions/upload-pages-artifact@v3
         with:
